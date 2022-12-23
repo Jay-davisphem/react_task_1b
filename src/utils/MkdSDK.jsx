@@ -1,3 +1,7 @@
+import axios from "axios";
+import useContext from "react";
+import { AuthContext } from "../authContext";
+
 export default function MkdSDK() {
   this._baseurl = "https://reacttask.mkdlabs.com";
   this._project_id = "reacttask";
@@ -12,9 +16,27 @@ export default function MkdSDK() {
   this.setTable = function (table) {
     this._table = table;
   };
-  
+  this.performActions = async (endUrl, body) => {
+    const apiUrl = `${this.baseUrl()}/${endUrl}`;
+    const headers = this.getHeader();
+
+    return await axios.post(apiUrl, body, headers);
+  };
   this.login = async function (email, password, role) {
     //TODO
+    const body = {
+      email,
+      password,
+      role,
+    };
+    const {
+      data: { user_id, role, token },
+    } = await this.performActions("v2/api/lambda/login", body);
+    const [state, dispatch] = useContext(AuthContext);
+    dispatch({
+      type: "login",
+      payload: { user: user_id, role: role, token: token },
+    });
   };
 
   this.getHeader = function () {
@@ -27,7 +49,7 @@ export default function MkdSDK() {
   this.baseUrl = function () {
     return this._baseurl;
   };
-  
+
   this.callRestAPI = async function (payload, method) {
     const header = {
       "Content-Type": "application/json",
@@ -55,7 +77,7 @@ export default function MkdSDK() {
           throw new Error(jsonGet.message);
         }
         return jsonGet;
-      
+
       case "PAGINATE":
         if (!payload.page) {
           payload.page = 1;
@@ -84,10 +106,12 @@ export default function MkdSDK() {
       default:
         break;
     }
-  };  
+  };
 
   this.check = async function (role) {
     //TODO
+    const body = { role };
+    await this.performActions("v2/api/lambda/check", body);
   };
 
   return this;
