@@ -14,8 +14,13 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
       //TODO
+      const { token, user_id, role } = action.payload;
+      localStorage.setItem("token", JSON.stringify(token));
       return {
         ...state,
+        isAuthenticated: true,
+        user: user_id,
+        role: role,
       };
     case "LOGOUT":
       localStorage.clear();

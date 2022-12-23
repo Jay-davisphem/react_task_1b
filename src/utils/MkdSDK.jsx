@@ -35,7 +35,7 @@ export default function MkdSDK() {
     const [state, dispatch] = useContext(AuthContext);
     dispatch({
       type: "login",
-      payload: { user: user_id, role: role, token: token },
+      payload: { user_id, role, token },
     });
   };
 
