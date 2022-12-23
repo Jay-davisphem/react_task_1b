@@ -1,5 +1,5 @@
 import axios from "axios";
-import {useContext} from "react";
+import { useContext } from "react";
 import { AuthContext } from "../authContext";
 
 export default function MkdSDK() {
@@ -32,7 +32,7 @@ export default function MkdSDK() {
     const {
       data: { user_id, role, token },
     } = await this.performActions("v2/api/lambda/login", body);
-    const [state, dispatch] = useContext(AuthContext);
+    const { dispatch } = useContext(AuthContext);
     dispatch({
       type: "login",
       payload: { user_id, role, token },
@@ -110,6 +110,7 @@ export default function MkdSDK() {
 
   this.check = async function (role) {
     //TODO
+    const { dispatch } = useContext(AuthContext);
     const body = { role };
     const data = await this.performActions("v2/api/lambda/check", body);
     if (data.status === 200) dispatch({ type: "check" });
