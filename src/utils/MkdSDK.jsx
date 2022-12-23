@@ -1,5 +1,5 @@
 import axios from "axios";
-import useContext from "react";
+import {useContext} from "react";
 import { AuthContext } from "../authContext";
 
 export default function MkdSDK() {
@@ -22,12 +22,12 @@ export default function MkdSDK() {
 
     return await axios.post(apiUrl, body, headers);
   };
-  this.login = async function (email, password, role) {
+  this.login = async function (email, password, role_) {
     //TODO
     const body = {
       email,
       password,
-      role,
+      role_,
     };
     const {
       data: { user_id, role, token },
@@ -111,7 +111,8 @@ export default function MkdSDK() {
   this.check = async function (role) {
     //TODO
     const body = { role };
-    await this.performActions("v2/api/lambda/check", body);
+    const data = await this.performActions("v2/api/lambda/check", body);
+    if (data.status === 200) dispatch({ type: "check" });
   };
 
   return this;
