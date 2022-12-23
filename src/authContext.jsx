@@ -51,6 +51,9 @@ const AuthProvider = ({ children }) => {
 
   React.useEffect(() => {
     //TODO
+    sdk.check(state.role).then((res) => {
+      if (!res) tokenExpireError(dispatch, "Token expired!");
+    });
   }, []);
 
   return (

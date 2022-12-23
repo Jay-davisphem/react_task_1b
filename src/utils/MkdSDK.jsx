@@ -43,6 +43,7 @@ export default function MkdSDK() {
     return {
       Authorization: "Bearer " + localStorage.getItem("token"),
       "x-project": base64Encode,
+      "content-type": "application/json",
     };
   };
 
@@ -110,11 +111,15 @@ export default function MkdSDK() {
 
   this.check = async function (role) {
     //TODO
-    const { dispatch } = useContext(AuthContext);
     const body = { role };
-    const data = await this.performActions("v2/api/lambda/check", body);
-    if (data.status === 200) dispatch({ type: "check" });
+    try {
+      const data = await this.performActions("v2/api/lambda/check", body);
+      if (data.status === 200) {
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error(err);
+    }
   };
-
-  return this;
 }

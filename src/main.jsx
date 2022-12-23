@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AuthContext } from "./authContext";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import SnackBar from "./components/SnackBar";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
-
 function renderRoutes(role) {
   switch (role) {
     case "admin":
@@ -31,7 +30,14 @@ function renderRoutes(role) {
 
 function Main() {
   const { state } = React.useContext(AuthContext);
-
+  const location = useLocation();
+  console.log(location);
+  useEffect(() => {
+    if (state.isAuthenticated && location.pathname === "/")
+      window.location.href = "/admin/dashboard";
+    else if (!state.isAuthenticated && location.pathname === "/")
+      window.location.href = "/admin/login";
+  }, []);
   return (
     <div className="h-full">
       <div className="flex w-full">
